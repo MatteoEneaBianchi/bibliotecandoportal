@@ -1,0 +1,23 @@
+name: Aggiorna i post automaticamente
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # Ogni giorno a mezzanotte
+  workflow_dispatch:  # Permette di eseguire manualmente il workflow
+
+jobs:
+  update-submodule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Aggiornare il submodule
+        run: |
+          git submodule update --remote --merge
+          git add posts
+          git commit -m "Aggiornati automaticamente i post"
+          git push origin main
